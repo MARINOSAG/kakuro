@@ -20,21 +20,26 @@ def get_neighbors(puzzle):
 				for i in range (column+1, len(puzzle[0]) ) :
 					if(puzzle[row][i] ==  '-'):#an o geitonas einai variable
 						neighbors_dict[(row,column)].append((row,i))
-
+					elif(puzzle[row][i] !=  '*'): #an brethei deyteros kanonas athrismatos
+						break
 				#gia toys katakoryfous geitones apo panw tou 
-				for i in range (0,column ) :
+				for i in range (column-1,0,-1 ) :
 					if(puzzle[row][i] ==  '-'):#an o geitonas einai variable
 						neighbors_dict[(row,column)].append((row,i))
-
+					elif(puzzle[row][i] !=  '*'): #an brethei deyteros kanonas athrismatos
+						break;
 				#gia toys orizontioys geitones apo ta deksia toy
 				for i in range (row+1, len(puzzle) ) :
 					if(puzzle[i][column] ==  '-'):#an o geitonas einai variable
 						neighbors_dict[(row,column)].append((i,column))
-
+					elif(puzzle[i][column] !=  '*'): #an brethei deyteros kanonas athrismatos
+						break;
 				#gia toys orizontioys geitones apo ta deksia toy
-				for i in range (0,row ) :
+				for i in range (row-1,0,-1 ) :
 					if(puzzle[i][column] ==  '-'):#an o geitonas einai variable
 						neighbors_dict[(row,column)].append((i,column))
+					elif(puzzle[i][column] !=  '*'): #an brethei deyteros kanonas athrismatos
+						break;
 			#print(puzzle[row][column])
 	return neighbors_dict
 
@@ -44,8 +49,10 @@ class Kakuro(CSP):
 		domain = {}
 		for key in neighbors.keys():
 			domain[key] = [x for x in range(1,10)]
+		variables = [x for x in neighbors.keys()]
 		print("domain == ",domain)
 		print("neighbors == ",neighbors)
+		print("variables == ",variables )
 
 
 
