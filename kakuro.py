@@ -12,10 +12,12 @@ def get_neighbors(puzzle):
 
 	print("puzzle is ",len(puzzle), len(puzzle[0] ) )
 	neighbors_dict = {}
+	condict ={}
 	for  row in range(len(puzzle))  :
-		for column in range(len(puzzle0[0])) :
+		for column in range(len(puzzle[0])) :
 			if(puzzle[row][column] == '-'):#an prokeitai gia metablhth
-				neighbors_dict[(row,column)] = []
+				condict[(row,column)] = {}
+				neighbors_dict[(row,column)] = [] 
 				#gia toys katakoryfous geitones apo katw tou 
 				for i in range (column+1, len(puzzle[0]) ) :
 					if(puzzle[row][i] ==  '-'):#an o geitonas einai variable
@@ -41,11 +43,49 @@ def get_neighbors(puzzle):
 					elif(puzzle[i][column] !=  '*'): #an brethei deyteros kanonas athrismatos
 						break;
 			#print(puzzle[row][column])
-	return neighbors_dict
+	return (neighbors_dict,condict)
+#synarthsh pou epistrefei dictionary gia kathe metablhth tous periorismoys oyras kai sthlhs poy exoyn 
+def get_constrains(puzzle,condict):
+
+
+	for row in range(len(puzzle) ):
+		for column in range(len(puzzle[0])):
+			item =  puzzle[row][column]
+			if( isinstance(item , tuple )):#an prokeitai gia tuple shmainei oti prokeite gia periorismo
+				
+				if(isinstance( item[0] ,int) ):#column constrain
+					for i in range(row+1,len(puzzle)):
+						if(puzzle[i][column] == '-'):
+							condict[(i,column)]["col_con"] = item[0]
+							#krataw kai apo poio shmeio toy pinaka proeilthe o periorismos
+							print( (row,column) )
+
+							condict[(i,column)]["father_col_con"] = (row,column)
+
+						else :
+							break;
+
+				if(isinstance( item[1] ,int)  ) :
+
+					for i in range(column+1,len(puzzle[0])):
+						if(puzzle[row][i] == '-'):
+							condict[(row,i)]["row_con"] = item[1]
+							#krataw kai apo poio shmeio toy pinaka proeilthe o periorismos
+							print( (row,column) )
+							condict[(row,i)]["father_row_con"] = (row,column)
+
+						else :
+							break;
+
+
 
 class Kakuro(CSP):
 	def __init__(self,puzzle):
 		neighbors = get_neighbors(puzzle)
+		condict = neighbors[1]
+		print(condict)
+
+		neighbors = neighbors[0]
 		domain = {}
 		for key in neighbors.keys():
 			domain[key] = [x for x in range(1,10)]
@@ -54,7 +94,10 @@ class Kakuro(CSP):
 		print("neighbors == ",neighbors)
 		print("variables == ",variables )
 
+		get_constrains(puzzle,condict)
+		print("condict == ",condict)
 
+	#def Kakuro_constraint(self):
 
 
 
