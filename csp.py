@@ -513,7 +513,6 @@ class NQueensCSP(CSP):
         """Initialize data structures for n Queens."""
         CSP.__init__(self, list(range(n)), UniversalDict(list(range(n))),
                      UniversalDict(list(range(n))), queen_constraint)
-
         self.rows = [0]*n
         self.ups = [0]*(2*n - 1)
         self.downs = [0]*(2*n - 1)
@@ -522,10 +521,13 @@ class NQueensCSP(CSP):
         """The number of conflicts, as recorded with each assignment.
         Count conflicts in row and in up, down diagonals. If there
         is a queen there, it can't conflict with itself, so subtract 3."""
+        
         n = len(self.variables)
         c = self.rows[val] + self.downs[var+val] + self.ups[var-val+n-1]
         if assignment.get(var, None) == val:
             c -= 3
+        print("currdomains == " + str(self.curr_domains)  ) 
+        print("\t\t\t\t\t\t\tassignment == " + str(assignment))
         return c
 
     def assign(self, var, val, assignment):
