@@ -59,12 +59,13 @@ def get_constrains(puzzle,condict):
 		for column in range(len(puzzle[0])):
 			item =  puzzle[row][column]
 			if( isinstance(item , tuple )):#an prokeitai gia tuple shmainei oti prokeite gia periorismo
-				constrain_variables[(row,column)] =[]
+				constrain_variables[(row,column)] ={'col_con_list_vars':[],'row_con_list_vars':[],'col_con':'' ,'row_con':''}
 
 				if(isinstance( item[0] ,int) ):#column constrain
+					constrain_variables[(row,column)]['col_con'] = item[0] 
 					for i in range(row+1,len(puzzle)):
 						if(puzzle[i][column] == '-'):
-							constrain_variables[(row,column)].append((i,column))
+							constrain_variables[(row,column)]['col_con_list_vars'].append((i,column))
 							condict[(i,column)]["col_con"] = item[0]
 							#krataw kai apo poio shmeio toy pinaka proeilthe o periorismos
 							#print( (row,column) )
@@ -75,10 +76,11 @@ def get_constrains(puzzle,condict):
 							break;
 
 				if(isinstance( item[1] ,int)  ) :
+					constrain_variables[(row,column)]['row_con'] = item[1] 
 
 					for i in range(column+1,len(puzzle[0])):
 						if(puzzle[row][i] == '-'):
-							constrain_variables[(row,column)].append((row,i))
+							constrain_variables[(row,column)]['row_con_list_vars'].append((row,i))
 
 							condict[(row,i)]["row_con"] = item[1]
 							#krataw kai apo poio shmeio toy pinaka proeilthe o periorismos
@@ -146,13 +148,24 @@ class Kakuro(CSP):
 		temp_list = [x for x in self.condict.keys() if(x!= A and x!= B and self.condict[x][string] == self.condict[A][string]) ]
 		return len(temp_list)==0
 
+ 	#constrain_variables = {(0, 1): [(1, 1), (2, 1), (3, 1)], (6, 4): [(6, 5), (6, 6)]}
+
 	#function that checks if there are no conflicts between variables
-	
+	def check_if_everything_ok(self):
+		assigned_vars  = self.infer_assignment()
+
+		for constrain in self.constrain_variables.keys(): #gia kathe constrain 
+			athrisma = 0 
+			#gia to row
+			for var in self.constrain_variables[constrain]['row_con_list_vars'] : #gia kathe metablhth tou constrain 
+				athrisma += assigned_vars[var]
+ 			if(athrisma != )
+
+
 	def display(self ):
 		x = len(self.puzzle)
 		y = len(self.puzzle[0])
 		printing_list = []
-		
 		print("displaying port x == ",x, "  y ==  ",y)
 		for i in range(x):
 			printing_list.append([])
@@ -191,7 +204,7 @@ class Kakuro(CSP):
 			#lista apo (i,j) variables pou anhkoyn kai aytes ston periorismo thw A,B
 			con = self.condict[A]["row_con"]
 			father_con = self.condict[A]["father_row_con"]
-			var_number = len(self.constrain_variables[father_con])
+			var_number = len(self.constrain_variables[father_con]['row_con_list_vars'])
 			if(var_number == 2  ):#an ston periorismo ayto anhkoun mono 2 metablhtes dhladh mono h A, B
 				return (a+b) ==con
 			# if(self.variables_are_alone_in_constrain(A,B,"father_row_con")):
@@ -221,11 +234,12 @@ class Kakuro(CSP):
 				#print("assignement_list == ",assignement_list)
 			#	print("temp_list == ",temp_list)
 
+				#pairnw lista me tis times twn metablhtwn pou exoun ginei assign kai einai ston idio periorismo me ta A,B
 				assignment_list = []
 				for x in temp_list:
 					assignment_list.append(self.assignment[x])
 
-
+				#den yparxei kamia assign
 				if(len(temp_list) == 0):#an oi ypoloipes metablhtes einai oles unassigned 
 					return (a+b) < con #prepei to athrisma toys na einai mikrotero apo ton periorismo
 			
@@ -248,9 +262,9 @@ class Kakuro(CSP):
 			#lista apo (i,j) variables pou anhkoyn kai aytes ston periorismo thw A,B
 			con = self.condict[A]["col_con"]
 			father_con = self.condict[A]["father_col_con"]
-			var_number = len(self.constrain_variables[father_con])
+			var_number = len(self.constrain_variables[father_con]['col_con_list_vars'])
 
-			if(len(self.constrain_variables[father_con]) == 2  ):#an ston periorismo ayto anhkoun mono 2 metablhtes dhladh mono h A, B
+			if(var_number == 2  ):#an ston periorismo ayto anhkoun mono 2 metablhtes dhladh mono h A, B
 				return (a+b) ==con
 
 			# if(self.variables_are_alone_in_constrain(A,B,"father_col_con")):
