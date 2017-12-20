@@ -111,8 +111,8 @@ class Kakuro(CSP):
 		#print("variables == ",variables )
 
 		self.constrain_variables = get_constrains(puzzle,self.condict)
-		print("condict == ",self.condict)
-		print("constrain_variables ==  ",self.constrain_variables)
+		#print("condict == ",self.condict)
+		#print("constrain_variables ==  ",self.constrain_variables)
 		# CSP(list(neighbors.keys()), UniversalDict(colors), neighbors,
   #              different_values_constraint)
 
@@ -155,13 +155,25 @@ class Kakuro(CSP):
 		assigned_vars  = self.infer_assignment()
 
 		for constrain in self.constrain_variables.keys(): #gia kathe constrain 
-			athrisma = 0 
+			athrisma_grammhs = 0 
 			#gia to row
-			for var in self.constrain_variables[constrain]['row_con_list_vars'] : #gia kathe metablhth tou constrain 
-				athrisma += assigned_vars[var]
- 			if(athrisma != )
+			athrisma_sthlhs =0
+			#for (var1,var2) in zip(self.constrain_variables[constrain]['row_con_list_vars'],self.constrain_variables[constrain]['col_con_list_vars'] ): #gia kathe metablhth tou constrain 
+			for var1 in self.constrain_variables[constrain]['row_con_list_vars']: #gia kathe metablhth tou constrain 
+				athrisma_grammhs += assigned_vars[var1]
+			for var2 in  self.constrain_variables[constrain]['col_con_list_vars']:
+				athrisma_sthlhs += assigned_vars[var2]
 
+				#print("var1 == ",var1,"  var2 == ",var2, " c onstrain == ", constrain , "assigneed var1 == ",assigned_vars[var1])
+			
 
+			if(athrisma_grammhs != self.constrain_variables[constrain]['row_con']  and self.constrain_variables[constrain]['row_con'] !=''):
+				print("GAMIETAI GIA ROW_CON == ",constrain,"  me athrisma grammhs = ",athrisma_grammhs , "  enw prepei na einai ",self.constrain_variables[constrain]['row_con'])
+				return False
+			if(athrisma_sthlhs != self.constrain_variables[constrain]['col_con'] and self.constrain_variables[constrain]['col_con']!=''):
+				print("GAMIETAI GIA COL_CON == ",constrain)
+				return False
+		return True
 	def display(self ):
 		x = len(self.puzzle)
 		y = len(self.puzzle[0])
@@ -356,13 +368,20 @@ while (1):
 	result = backtracking_search( kakuro, inference=forward_checking )
 	print ("Running time: ", time.clock() - start_time) 
 	kakuro.display()
-
+	if(kakuro.check_if_everything_ok()):
+		print("THE BOARD IS FINETO\n\n\n\n\n")
+	else:
+		print("GAMITHIKE TO SYMPAN\n\n\n\n")
 	kakuro = Kakuro(sel)        
 	print( "\nForward Checking - MRV")
 	start_time = time.clock()
 	result = backtracking_search( kakuro, inference=forward_checking, select_unassigned_variable=mrv)
 	print ("Running time: ", time.clock() - start_time) 
 	kakuro.display()
+	if(kakuro.check_if_everything_ok()):
+		print("THE BOARD IS FINETO\n\n\n\n\n")
+	else:
+		print("GAMITHIKE TO SYMPAN\n\n\n\n")
 
 	kakuro = Kakuro(sel)    
 	print( "\nBackTracking")
@@ -370,7 +389,11 @@ while (1):
 	result = backtracking_search( kakuro )
 	print ("Running time: ", time.clock() - start_time )
 	kakuro.display()
-    
+	if(kakuro.check_if_everything_ok()):
+		print("THE BOARD IS FINETO\n\n\n\n\n")    
+	else:
+		print("GAMITHIKE TO SYMPAN\n\n\n\n")
+
 	kakuro = Kakuro(sel)    
 	print( "\nBackTracking - MRV")
 	start_time = time.clock()
@@ -378,3 +401,7 @@ while (1):
 	print ("Running time: ", time.clock() - start_time) 
 	kakuro.display()
 	print ("\n") 
+	if(kakuro.check_if_everything_ok()):
+		print("THE BOARD IS FINETO\n\n\n\n\n")
+	else:
+		print("GAMITHIKE TO SYMPAN\n\n\n\n")
