@@ -94,6 +94,7 @@ def get_constrains(puzzle,condict):
 
 class Kakuro(CSP):
 	def __init__(self,puzzle):
+
 		self.puzzle= puzzle
 		neighbors = get_neighbors(puzzle)
 		self.condict = neighbors[1]
@@ -131,22 +132,7 @@ class Kakuro(CSP):
 
 
 
-	#synarthsh pou epistrefei ton arithmo twn variables pou anhkoun sto constrain 
-	#opou con einai (i,j) tuple pou deixnei thn thesh pou patera pou dhmiourgei ton periorismo grammhs
-	def number_of_variables_of_row_con(self,constrain ):
-		temp_list = [x for x in self.condict.keys() if(self.condict[x]["father_row_con"] == constrain) ]
-		return len(temp_list)
 
-
-
-	def number_of_variables_of_col_con(self,constrain ):
-		temp_list = [x for x in self.condict.keys() if(self.condict[x]["father_col_con"] == constrain) ]
-		return len(temp_list)
-
-	#function pou epistrefei true or false an oi metablhtes A,B einai mones toys sto sygkekrimmeno constrain
-	def variables_are_alone_in_constrain(self,A,B,string):
-		temp_list = [x for x in self.condict.keys() if(x!= A and x!= B and self.condict[x][string] == self.condict[A][string]) ]
-		return len(temp_list)==0
 
  	#constrain_variables = {(0, 1): [(1, 1), (2, 1), (3, 1)], (6, 4): [(6, 5), (6, 6)]}
 
@@ -158,13 +144,13 @@ class Kakuro(CSP):
 			athrisma_grammhs = 0 
 			#gia to row
 			athrisma_sthlhs =0
-			#for (var1,var2) in zip(self.constrain_variables[constrain]['row_con_list_vars'],self.constrain_variables[constrain]['col_con_list_vars'] ): #gia kathe metablhth tou constrain 
 			for var1 in self.constrain_variables[constrain]['row_con_list_vars']: #gia kathe metablhth tou constrain 
-				athrisma_grammhs += assigned_vars[var1]
+				if(var1 in assigned_vars.keys()):
+					athrisma_grammhs += assigned_vars[var1]
 			for var2 in  self.constrain_variables[constrain]['col_con_list_vars']:
-				athrisma_sthlhs += assigned_vars[var2]
+				if(var2 in assigned_vars.keys()):
+					athrisma_sthlhs += assigned_vars[var2]
 
-				#print("var1 == ",var1,"  var2 == ",var2, " c onstrain == ", constrain , "assigneed var1 == ",assigned_vars[var1])
 			
 
 			if(athrisma_grammhs != self.constrain_variables[constrain]['row_con']  and self.constrain_variables[constrain]['row_con'] !=''):
@@ -185,103 +171,67 @@ class Kakuro(CSP):
 				if self.puzzle[i][j] == '-':
 					if tuple((i,j)) in self.curr_domains.keys():
 						sys.stdout.write("          " +str(self.curr_domains[(i,j)][0]))
-						#sys.stdout.write(" ")
 						printing_list[i].append(self.curr_domains[(i,j)][0])
-						#print(self.curr_domains[(i,j)])
- 						#print (assignment [tuple((i,j))]),
+						
 				else:
 					sys.stdout.write("          " + str(self.puzzle[i][j]) )
-					#sys.stdout.write(" ")
 					printing_list[i].append(self.puzzle[i][j])
 
-
-
-					#print (self.puzzle[i][j])
 			sys.stdout.write("\n")
 
-		# for item in printing_list:
-		# 	print(item)
+		
 	def Kakuro_constraint(self, A, a, B, b):
-		#print("\n\n")
-		#print(self.infer_assignment()) 
+		
 		if(a == b):#epistrefw False an anhkoun ston idio periorismo gia na einai diaforetikoi
-			#print("oi mteblhtes den ginetai na paroun idia timh")
 			return False
-		#self.assignment = self.curr_domains
 		self.assignment = self.infer_assignment()
 		if(A[0] == B[0]):#anhkoun ston idio periorismo grammhs
-		#if(self.condict[A]["father_row_con"] == self.condict[B]["father_row_con"]):
 			
 			#se periptwsh poy ston periorismo ayto einai mones toys kai den yparxei allh metablhth 
 			#lista apo (i,j) variables pou anhkoyn kai aytes ston periorismo thw A,B
 			con = self.condict[A]["row_con"]
 			father_con = self.condict[A]["father_row_con"]
-			var_number = len(self.constrain_variables[father_con]['row_con_list_vars'])
+			list_of_variables_of_same_con = self.constrain_variables[father_con]['row_con_list_vars']
+			var_number = len(list_of_variables_of_same_con)
 			if(var_number == 2  ):#an ston periorismo ayto anhkoun mono 2 metablhtes dhladh mono h A, B
-				return (a+b) ==con
-			# if(self.variables_are_alone_in_constrain(A,B,"father_row_con")):
-			# 	return (a+b) == con #prepei to athrisma toys na einai iso me ton periorismo
+				return (a+b) == con
+			
 			else:
-				#yparxoun perissoteres apo dyo metablhtes ston periorismo ayto
-				#oi metablhtes den einai mones tous ston periorismo grammhs
 				
-			#	print("oi metablhtes A , B  DENNNN einai mones tous ston periorismo grammhs")
+				#oi metablhtes den einai mones tous ston periorismo grammhs
+
 				#pairnw thn lista apo metablhtes pou exoun ginei assign kai anhkoun ston idio periorismo grammhs
 				#h lista assignment einai ths morfhs curr_domains ==  {(3, 2): [2], (1, 3): [2], (2, 3): [4], (2, 1): [3], (2, 2): [1], (3, 1): [1], (2, 4): [2], (1, 4): [1]}
 				#sthn periptwsh pou len(self.assignment[x] )==1 shmainei oti h metablhth exei ginei assign
-			
-				#if(self.assignment != None):
-				temp_list = [x for x in self.assignment.keys() if x!= A and x!= B and self.condict[x]["father_row_con"] ==father_con  ]
-				#else :
-				#	temp_list = []
-				
-				#an oles oi ypoloipes einai unassign 
-				#synarthsh pou epistrefei ton arithmo twn variables pou anhkoun sto constrain 
-				
-				#var_number = self.number_of_variables_of_row_con(father_con)
-				
-				#temp_list = [x for x in self.assignment.keys() if x!= A and x!= B and len(self.assignment[x] )==1 and self.condict[x]["father_row_con"] ==con  ]
-			#	print("var_number == ",var_number)
+				temp_list = [x for x in list_of_variables_of_same_con if  x!= A and x!= B and x in self.assignment.keys()]
 
-				#print("assignement_list == ",assignement_list)
-			#	print("temp_list == ",temp_list)
-
-				#pairnw lista me tis times twn metablhtwn pou exoun ginei assign kai einai ston idio periorismo me ta A,B
-				assignment_list = []
-				for x in temp_list:
-					assignment_list.append(self.assignment[x])
-
+				assignment_list =[x for x in list_of_variables_of_same_con if  x!= A and x!= B and x in self.assignment.keys()]
 				#den yparxei kamia assign
 				if(len(temp_list) == 0):#an oi ypoloipes metablhtes einai oles unassigned 
 					return (a+b) < con #prepei to athrisma toys na einai mikrotero apo ton periorismo
 			
-				
-				elif(var_number-2 == len(temp_list) ): #an oi ypoloipes metablhtes einai oles assigned
+				assignment_list = []
+				for x in temp_list:
+					assignment_list.append(self.assignment[x])
+				if(var_number-2 == len(temp_list) ): #an oi ypoloipes metablhtes einai oles assigned
 					return (a+b) + sum(assignment_list)  == con 
 				else :#an exw kai assigned kai unassigned 
-				#	print("assignment == ",self.assignment)
-					#assignment_list = list(self.assignment.values())
-			#		print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-				#	print("assignement_list == ",assignment_list)
 					return (a+b) + sum(assignment_list)  < con 
+		
 		if(A[1] == B[1]):#anhkoun ston idio periorismo sthlhs
-		#if(self.condict[A]["father_col_con"] == self.condict[B]["father_col_con"]):
-			#print("BBBBBBBBBBB")
-			# if(a == b):#epistrefw False an anhkoun ston idio periorismo gia na einai diaforetikoi
-			# 	#print("oi mteblhtes den ginetai na paroun idia timh")
-			# 	return False
+		
 			#se periptwsh poy ston periorismo ayto einai mones toys kai den yparxei allh metablhth 
 			#lista apo (i,j) variables pou anhkoyn kai aytes ston periorismo thw A,B
 			con = self.condict[A]["col_con"]
 			father_con = self.condict[A]["father_col_con"]
-			var_number = len(self.constrain_variables[father_con]['col_con_list_vars'])
+			list_of_variables_of_same_con = self.constrain_variables[father_con]['col_con_list_vars']
+
+			var_number = len(list_of_variables_of_same_con)
 
 			if(var_number == 2  ):#an ston periorismo ayto anhkoun mono 2 metablhtes dhladh mono h A, B
 				return (a+b) ==con
 
-			# if(self.variables_are_alone_in_constrain(A,B,"father_col_con")):
-			# 	#print("oi metablhtes A , B einai mones tous ston periorismo Sthlhs")
-			# 	return (a+b) == con #prepei to athrisma toys na einai iso me ton periorismo
+			
 			else:
 				#yparxoun perissoteres apo dyo metablhtes ston periorismo ayto
 				#oi metablhtes den einai mones tous ston periorismo grammhs
@@ -289,54 +239,20 @@ class Kakuro(CSP):
 				#print("oi metablhtes A , B  DENNNN einai mones tous ston periorismo Sthlhs")
 				#pairnw thn lista apo metablhtes pou exoun ginei assign kai anhkoun ston idio periorismo grammhs
 				
-				#if(self.assignment != None):
-				temp_list = [x for x in self.assignment.keys() if x!= A and x!= B and self.condict[x]["father_col_con"] ==father_con  ]
-				#else :
-				#	temp_list = []
-				#an oles oi ypoloipes einai unassign 
 				
-
-				#var_number = self.number_of_variables_of_col_con(father_con )
+				temp_list = [x for x in list_of_variables_of_same_con if  x!= A and x!= B and x in self.assignment.keys()]
+				if(len(temp_list) == 0):#an oi ypoloipes metablhtes einai oles unassigned 
+					return (a+b) < con #prepei to athrisma toys na einai mikrotero apo ton periorismo
 				
-
-				#print("var_number == ",var_number)
-				#print("temp_list == ",temp_list)
 				assignment_list = []
 				for x in temp_list:
 					assignment_list.append(self.assignment[x])
-				if(len(temp_list) == 0):#an oi ypoloipes metablhtes einai oles unassigned 
-					return (a+b) < con #prepei to athrisma toys na einai mikrotero apo ton periorismo
-			
-				elif(var_number-2 == len(temp_list) ): #an oi ypoloipes metablhtes einai oles assigned
+
+				if(var_number-2 == len(temp_list) ): #an oi ypoloipes metablhtes einai oles assigned
 					return (a+b) + sum(assignment_list)  == con 
 				else :#an exw kai assigned kai unassigned 
-					#print("assignment == ",self.assignment)
-					#assignment_list = list(self.assignment.values())
 					return (a+b) + sum(assignment_list)  < con 
 
-
-	# def nconflicts(self, var, val, assignment):
- #        """Return the number of conflicts var=val has with other variables."""
- #        # Subclasses may implement this more efficiently
- #        self.assignment = assignment
- #        def conflict(var2):
- #            return (var2 in assignment and
- #                    not self.constraints(var, val, var2, self.assignment[var2]))
- #        return count(conflict(v) for v in self.neighbors[var])
-
-# A = (2, 1)
-# B =  (3, 1)
-
-# print("ready to run")
-# puzzle = puzzle0
-# kakuro_prob = Kakuro(puzzle)
-# apotelesma = kakuro_prob.Kakuro_constraint(A,2,B,2)
-# print(apotelesma)
-
-#gia binary constrain borw na exw to diaforo mono me kathe geitona 
-#kai ola ta alla na ta periorizw se epipedo domain 
-#to hconflicts mporei na tropopoihthei kai to contrain na einai apla to diaforetiko X != Y opws sto maping
-#nconflicts san to has_conflict
 
 while (1):    
 	user_selection = input( "Please choose a puzzle(0 for puzzle0, 1 for puzzle1, 2 for puzzle2, 3 for puzzle3 or 4 for puzzle4 ): " )
@@ -345,6 +261,10 @@ while (1):
 		sel = puzzle0
 	elif (user_selection == "1" ):
 		sel = puzzle1
+	elif (user_selection == "66" ):
+		sel = puzzle66
+	elif (user_selection == "55" ):
+		sel = puzzle55
 	elif (user_selection == "11" ):
 		sel = puzzle11
 	elif ( user_selection == "2" ):
@@ -360,48 +280,70 @@ while (1):
 		continue
 
 	
+	print("\n MAC\n\n")
+	kakuro = Kakuro(sel)        
+
+	start_time = time.clock()
+	#AC3(kakuro)
+	result = backtracking_search( kakuro, inference=mac, select_unassigned_variable=mrv)
+
+	print("number of assins == ", kakuro.nassigns)
+
+	print ("Running time: ", time.clock() - start_time) 
+
+	kakuro.display()
+	if(kakuro.check_if_everything_ok()):
+		print("THE BOARD IS OK WITH THE CONSTRAINS\n\n\n\n\n")
+	else:
+		print("THE BOARD DOES IS NOTTT OK WITH THE CONSTRAINS\n\n\n\n")
+		exit()
 
 
 	kakuro = Kakuro(sel)    
 	print ("Forward Checking")
 	start_time = time.clock()
 	result = backtracking_search( kakuro, inference=forward_checking )
+	print("number of assins == ", kakuro.nassigns)
+
 	print ("Running time: ", time.clock() - start_time) 
 	kakuro.display()
 	if(kakuro.check_if_everything_ok()):
-		print("THE BOARD IS FINETO\n\n\n\n\n")
+		print("THE BOARD IS OK WITH THE CONSTRAINS\n\n\n\n\n")
 	else:
-		print("GAMITHIKE TO SYMPAN\n\n\n\n")
+		print("THE BOARD DOES IS NOTTT OK WITH THE CONSTRAINS\n\n\n\n")
+		exit()
+
 	kakuro = Kakuro(sel)        
 	print( "\nForward Checking - MRV")
 	start_time = time.clock()
 	result = backtracking_search( kakuro, inference=forward_checking, select_unassigned_variable=mrv)
+	print("number of assins == ", kakuro.nassigns)
+
 	print ("Running time: ", time.clock() - start_time) 
 	kakuro.display()
 	if(kakuro.check_if_everything_ok()):
-		print("THE BOARD IS FINETO\n\n\n\n\n")
+		print("THE BOARD IS OK WITH THE CONSTRAINS\n\n\n\n\n")
 	else:
-		print("GAMITHIKE TO SYMPAN\n\n\n\n")
+		print("THE BOARD DOES IS NOTTT OK WITH THE CONSTRAINS\n\n\n\n")
+		exit()
 
-	kakuro = Kakuro(sel)    
-	print( "\nBackTracking")
-	start_time = time.clock()
-	result = backtracking_search( kakuro )
-	print ("Running time: ", time.clock() - start_time )
-	kakuro.display()
-	if(kakuro.check_if_everything_ok()):
-		print("THE BOARD IS FINETO\n\n\n\n\n")    
-	else:
-		print("GAMITHIKE TO SYMPAN\n\n\n\n")
+
+	
+	
+
 
 	kakuro = Kakuro(sel)    
 	print( "\nBackTracking - MRV")
 	start_time = time.clock()
-	result = backtracking_search( kakuro, select_unassigned_variable=mrv)
+	result = backtracking_search( kakuro , select_unassigned_variable=mrv)
+	print("number of assins == ", kakuro.nassigns)
 	print ("Running time: ", time.clock() - start_time) 
 	kakuro.display()
 	print ("\n") 
+	print(kakuro.infer_assignment())
+
 	if(kakuro.check_if_everything_ok()):
-		print("THE BOARD IS FINETO\n\n\n\n\n")
+		print("THE BOARD IS OK WITH THE CONSTRAINS\n\n\n\n\n")
 	else:
-		print("GAMITHIKE TO SYMPAN\n\n\n\n")
+		print("THE BOARD DOES IS NOTTT OK WITH THE CONSTRAINS\n\n\n\n")
+		exit()

@@ -1,0 +1,42 @@
+'n' ergasies ,
+'m' mhxanes
+
+mia ergasia(apo tis 'n') -> exei 'm' diadoxikes energeies
+mia energeia 'i' (apo tis n*m sto plithos)-> exei 'd(i)' diarkeia se lepta(ekteleite se mia mono mhxanh MONO an exoun ektelestei oi energeies pou proigountai) 
+gia na ektelestei h energeia i prepei oles oi proigoumenes ths idias ergasias na exoyn ektelestei 
+
+
+Kathe mhxanh ektelei mia energeia thn fora 
+
+kathe ergasia i mporei na arxisei xronikh stigmh Si>=0 kai ALLA prepei na  termatistei prin D > 0 xronikh stigmh 
+
+to problhma einai na apofasisoume an oi ergasies mporoun na programmatistoyn ston xrono kai na broyme ena katallhlo programmatismo
+
+Na orisw problhma perioriswn
+
+
+LYSH : ----------------------------------------------------------------
+
+Metablhtes :
+	Estw metablhth X(ij)(i = 1..n ,j = 1..m) dhladh metablhtes einai oles oi  energeies gia kathe ergasia 
+	
+Domains :
+	Domain(ij) = {1..n*m} to domain einai h seira ths energeias dhladh an X(ij) = 15 tote h energeia ayth tha ektelestei dekathpempth
+	
+
+Periorismoi:
+
+	prepei kathe lista metablhtwn Xi na einai SORTED dhladh prepei kathe energeia j na ekteleite afou ektelestoyn oi proigoumenes
+an X = [
+[1,5,10],
+[2,3,6]
+]
+
+	
+
+prepei kathe Sij + dij <= D (dhladh h energeia na teleiwsei prin thn xronikh stigmh D)
+
+
+
+
+
