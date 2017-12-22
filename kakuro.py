@@ -255,24 +255,19 @@ class Kakuro(CSP):
 
 
 while (1):    
-	user_selection = input( "Please choose a puzzle(0 for puzzle0, 1 for puzzle1, 2 for puzzle2, 3 for puzzle3 or 4 for puzzle4 ): " )
+	user_selection = input( "Please choose a puzzle(44 for puzzle4x4, 45 for puzzle4x5, 55 for puzzle5x5, 66 for puzzle6x6 or 77 for puzzle7x7 ): " )
 	sel = 5 
-	if ( user_selection == "0" ):
-		sel = puzzle0
-	elif (user_selection == "1" ):
-		sel = puzzle1
+	
+	if (user_selection == "45" ):
+		sel = puzzle4x5
 	elif (user_selection == "66" ):
-		sel = puzzle66
+		sel = puzzle6x6
 	elif (user_selection == "55" ):
-		sel = puzzle55
-	elif (user_selection == "11" ):
-		sel = puzzle11
-	elif ( user_selection == "2" ):
-		sel = puzzle2
-	elif ( user_selection == "3" ):
-		sel = puzzle3
-	elif ( user_selection == "4" ):
-		sel = puzzle4
+		sel = puzzle5x5
+	elif (user_selection == "44" ):
+		sel = puzzle4x4
+	elif ( user_selection == "77" ):
+		sel = puzzle7x7
 	elif ( user_selection == "exit" ):
 		break
 	else:
